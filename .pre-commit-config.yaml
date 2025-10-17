@@ -1,0 +1,128 @@
+---
+default_language_version:
+  python: python3.13
+fail_fast: false
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        name: Remove unnecessary whitespace from code
+        args:
+          - --markdown-linebreak-ext=md
+      - id: end-of-file-fixer
+        name: Ensure proper file endings
+      - id: mixed-line-ending
+        name: Prevent mixed line endings
+      # TODO: Replace with a hook that allows comments and trailing commas if available
+      # Until then: Exclude any files that are not strictly JSON here
+      # These will be checked by pre-commit hook "check-json5" later
+      - id: check-json
+        name: check-json - Check JSON files
+        exclude: |
+          (?x) (
+            .vscode/launch.json$|
+            .vscode/settings.json$|
+            .vscode/tasks.json$|
+            .devcontainer/devcontainer.json$
+          )
+      # TODO: Replace with a hook that allows comments and trailing commas if available
+      # Until then: Exclude any files that are not strictly JSON here
+      - id: pretty-format-json
+        name: Format JSON files
+        args:
+          - --autofix
+          - --indent
+          - '4'
+          - --no-sort-keys
+        exclude: |
+          (?x) (
+            .vscode/launch.json$|
+            .vscode/settings.json$|
+            .vscode/tasks.json$|
+            .devcontainer/devcontainer.json$
+          )
+      - id: check-yaml
+        name: Check YAML files
+        args:
+          - --allow-multiple-documents
+          - --unsafe
+        # Does not work well with AWS CLoudFormation YAML files without these settings
+      - id: check-toml
+        name: Check TOML files
+      - id: check-case-conflict
+        name: Check for files causing issues on case-insensitive operating systems
+      - id: check-added-large-files
+        name: Check if large files have been added to Git
+      - id: detect-aws-credentials
+        name: Check if AWS credentials have been added to Git
+        args:
+          - --allow-missing-credentials
+      - id: detect-private-key
+        name: Check if a private SSH has been added to Git
+      - id: check-merge-conflict
+        name: Check if Git merge conflicts exist
+      - id: debug-statements
+        name: Check if Python code contains debug statements
+      - id: name-tests-test
+        name: Make sure tests have appropriate names
+        args:
+          - --pytest-test-first
+      - id: check-executables-have-shebangs
+        name: Make sure scripts have shebangs
+
+  - repo: https://gitlab.com/bmares/check-json5
+    rev: v1.0.0
+    hooks:
+      - id: check-json5
+        name: check-json5 - Check JSON files according to JSON5 (allowing comments)
+
+  - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+    rev: 0.2.3
+    hooks:
+      - id: yamlfmt
+        name: yamlfmt - Format YAML files
+        args:
+          - --mapping
+          - '2'
+          - --sequence
+          - '4'
+          - --offset
+          - '2'
+          - --width
+          - '150'
+
+  - repo: local
+    hooks:
+      - id: ruff
+        name: ruff check - Lint Python code
+        entry: ruff check
+        language: system
+        types_or: [python, pyi, jupyter]
+        args:
+          - --fix
+          - --exit-non-zero-on-fix
+
+      - id: ruff-format
+        name: ruff format - Format Python code
+        entry: ruff format
+        language: system
+        types_or: [python, pyi, jupyter]
+
+      - id: pyright
+        name: pyright - Type checking for Python code
+        entry: pyright
+        language: system
+        types: [python]
+
+      - id: pip-audit
+        name: pip-audit - Check for software vulnerabilities in dependencies (results in "pip-audit-results.txt")
+        entry: bash -c "pip-audit > pip-audit-results.txt || true"
+        language: system
+        pass_filenames: false
+
+      - id: shellcheck
+        name: shellcheck - Check shell scripts
+        entry: shellcheck
+        language: system
+        types: [shell]

@@ -1,0 +1,125 @@
+[project]
+name = "langchain-app"
+version = "0.1.0"
+description = "LangChain Application"
+authors = [
+    { name = "Dung Quang Nguyen (Juhan)", email = "dungthcsnt2014@gmail.com" }
+]
+maintainers = [
+    { name = "Dung Quang Nguyen (Juhan)", email = "dungthcsnt2014@gmail.com" }
+]
+readme = "README.md"
+requires-python = "==3.14.*"
+
+[dependency-groups]
+default = [
+    "fastapi==0.115.*",
+    "langchain>=1.0.0",
+]
+dev = [
+    "pip-audit==2.*",
+    "pre-commit==4.*",
+    "pyright[nodejs]==1.*",
+    "pytest==8.*",
+    "pytest-cov==6.*",
+    "pytest-mock==3.*",
+    "ruff==0.*",
+    "shellcheck-py==0.*",
+    "ipykernel",
+    "openpyxl"
+]
+
+[tool.uv]
+config-settings = { editable_mode = "compat" }
+default-groups = ["default", "dev"]
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools>=42", "wheel"]
+
+[tool.setuptools.packages]
+find = { include = [
+    "langchain-app",
+] }
+
+###########################
+# Configuration of linters
+###########################
+
+[tool.ruff]
+extend-exclude = [
+    ".venv*",
+    "tmp",
+    "_Trash",
+    "__Trash",
+    "debug",
+    "data",
+    "experiments",
+]
+fix = true
+force-exclude = true
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "ALL",
+    # See also:
+    # - List of all rules: https://docs.astral.sh/ruff/rules/
+    # - Default configuration: https://github.com/astral-sh/ruff#configuration
+    # - Example ruff configurations: https://www.reddit.com/r/Python/comments/1dp4jrm/share_your_ruff_config/
+]
+ignore = [
+    "D203",   # one-blank-line-before-class
+    "D212",   # multi-line-summary-first-line
+    "D407",   # dashed-underline-after-section
+    "TD002",  # missing-todo-author
+    "TD003",  # missing-todo-link
+    "FIX002", # line-contains-todo
+    "TRY003", # raise-vanilla-args (checks for long exception messages)
+    "COM812", # missing-trailing-comma (might conflict with formatter)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**/test_*.py" = [
+    "D101",    # undocumented-public-class
+    "D102",    # undocumented-public-method
+    "D103",    # undocumented-public-function
+    "PLR2004", # magic-value-comparison
+    "S101",    # assert (Use of assert detected)
+]
+"__init__.py" = ["D104"] # undocumented-public-package
+"notebooks/*" = ["D100"] # undocumented-public-module
+
+[tool.ruff.lint.pylint]
+max-args = 6  # Allow up to 6 arguments in functions
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.pyright]
+extraPaths = ["."]
+exclude = [
+    "**/__pycache__/**",
+    "**/distutils/**",
+    "**/node_modules/**",
+    "**/site-packages/**",
+    ".venv*",
+    "_Trash",
+    "__Trash",
+    "cdk.out",
+    "data",
+    "debug",
+    "tmp",
+    "experiments"
+]
+pythonPlatform = "Linux"
+typeCheckingMode = "strict"
+# Too strict for several standard libraries such as Pandas, boto3, etc.
+reportMissingTypeStubs = false
+reportUnknownArgumentType = false
+reportUnknownLambdaType = false
+reportUnknownMemberType = false
+reportUnknownVariableType = false

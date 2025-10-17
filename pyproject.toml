@@ -10,37 +10,19 @@ maintainers = [
 ]
 readme = "README.md"
 requires-python = "==3.14.*"
-
-[dependency-groups]
-default = [
-    "fastapi==0.115.*",
+dependencies = [
+    "fastapi[standard]>=0.115.14",
     "langchain>=1.0.0",
+    "openpyxl>=3.1.5",
+    "pip-audit>=2.9.0",
+    "pre-commit>=4.3.0",
+    "pyright>=1.1.406",
+    "pytest>=8.4.2",
+    "pytest-cov>=6.3.0",
+    "pytest-mock>=3.15.1",
+    "ruff>=0.14.1",
+    "shellcheck-py>=0.11.0.1",
 ]
-dev = [
-    "pip-audit==2.*",
-    "pre-commit==4.*",
-    "pyright[nodejs]==1.*",
-    "pytest==8.*",
-    "pytest-cov==6.*",
-    "pytest-mock==3.*",
-    "ruff==0.*",
-    "shellcheck-py==0.*",
-    "ipykernel",
-    "openpyxl"
-]
-
-[tool.uv]
-config-settings = { editable_mode = "compat" }
-default-groups = ["default", "dev"]
-
-[build-system]
-build-backend = "setuptools.build_meta"
-requires = ["setuptools>=42", "wheel"]
-
-[tool.setuptools.packages]
-find = { include = [
-    "langchain-app",
-] }
 
 ###########################
 # Configuration of linters
